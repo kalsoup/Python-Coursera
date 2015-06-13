@@ -1,0 +1,112 @@
+# Rock-paper-scissors-lizard-Spock template
+
+
+# The key idea of this program is to equate the strings
+# "rock", "paper", "scissors", "lizard", "Spock" to numbers
+# as follows:
+#
+# 0 - rock
+# 1 - Spock
+# 2 - paper
+# 3 - lizard
+# 4 - scissors
+
+# helper functions
+
+# random module is needed for random.randrange runction
+import random
+
+def name_to_number(name):
+    if name=="rock":
+        return 0
+    elif name=="Spock":
+        return 1
+    elif name=="paper":
+        return 2
+    elif name=="lizard":
+        return 3
+    else:
+        return 4
+    
+
+
+def number_to_name(number):
+    
+    # converts computer number to string
+    
+    if number==0:
+        return "rock"
+    elif number==1:
+        return "Spock"
+    elif number==2:
+        return "paper"
+    elif number==3:
+        return "lizard"
+    else:
+        return "scissors"
+    
+    
+def rpsls(player_choice): 
+
+    # print a blank line to separate consecutive games
+    print "\n"
+    print "_________________________________________"
+    
+    # print out the message for the player's choice
+    print "Player chooses:", player_choice
+
+    # convert the player's choice to player_number using the function name_to_number()
+    # create a new variable called player_number and assign
+    # the value returned by name_to_number() function to
+    # variable 'player_number'
+    
+    player_number=name_to_number(player_choice)
+    
+    # compute random guess for comp_number using random.randrange()
+    # random.randrange generates a random number between 0 to 4 and 
+    # assign it to 'comp_number'
+    
+    comp_number=random.randrange(0,4)
+    
+    # convert comp_number to comp_choice using the function number_to_name()
+    # and prints computer choice
+    
+    comp_choice=number_to_name(comp_number)
+    print "Computer chooses:", comp_choice
+    
+    # I used the print statements below to check my code and 
+    # see if my variables were being assigned the correct value
+    # print comp_number
+    # print player_choice
+    # print player_number
+    
+    # compute difference of comp_number and player_number modulo five
+    
+    result=(comp_number-player_number)%5
+    
+    #when you do the math and compare it the RPSLS circle
+    #described in the video, you see that when the result is 
+    # 1 or 3, the computer wins and if the result is
+    # 2 or 4, the player wins
+    # We use the vlaue of result and if statements with OR operators
+    # to determine the winner
+    
+    
+    if result==(1 or 3):
+        print "Result:\nComputer wins the RPSLS game!!"
+    elif result==(2 or 4):
+        print "Result:\nPlayer wins the RPSLS game!!"
+    elif result==0:
+        print "Result\nThis RPSLS game is a tie!!"
+
+    
+# test your code - THESE CALLS MUST BE PRESENT IN YOUR SUBMITTED CODE
+rpsls("rock")
+rpsls("Spock")
+rpsls("paper")
+rpsls("lizard")
+rpsls("scissors")
+
+# always remember to check your completed program against the grading rubric
+
+
