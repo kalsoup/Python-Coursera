@@ -1,0 +1,98 @@
+# template for "Guess the number" mini-project
+# input will come from buttons and an input field
+# all output for the game will be printed in the console
+
+import simplegui
+import random
+import math
+
+secret_number=1
+chances=1
+num_range=1000
+
+# helper function to start and restart the game
+def new_game():
+    # initialize global variables used in your code here
+    global secret_number
+    global chances
+    global num_range
+    #function to generate a random 'secret_number'
+    secret_number=random.randint(0, num_range)
+    if num_range==100:
+        chances=7
+    elif num_range==1000:
+        chances=10
+    
+    print "Guess a number between 0 to", num_range
+    print "Remaining guesses:", chances
+    
+# define event handlers for control panel
+def range100():
+    # button that changes the range to [0,100) and starts a new game 
+    global num_range
+    num_range=100
+    new_game()
+    pass
+    # remove this when you add your code
+    
+
+def range1000():
+    # button that changes the range to [0,1000) and starts a new game     
+    global num_range
+    num_range=1000
+    new_game()
+    pass
+
+def input_guess(guess):
+    # main game logic goes here	
+    global chances
+    global secret_number
+    #use print statement below to verify secret_number being passed
+    #to this function i.e to cheat :)
+    print "Comp gen nos is:", secret_number
+    #decreament till chances=0 and then start new game
+    chances=chances-1
+    #convert input to integer; Else number will be treated as a 
+    #string and comparison will not work
+    guess=int(guess)
+    print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    print "You guessed:", guess
+    if guess>secret_number:
+        print "Guess lower!"
+        print "You have", chances, " guesses remaining"
+        print "\n"
+    elif guess<secret_number:
+        print "Guess higher!"
+        print "You have", chances, "guesses remaining"
+        print "\n"
+    else:
+        print "You guessed right!!"
+        print "\n"
+        new_game()
+        return
+    if chances==0:
+        print "\n"
+        print """No worries, life gives you second chances. 
+Let's play a new game"""        
+        new_game()
+        return
+    
+    # remove this when you add your code
+    
+
+# create frame
+game_frame=simplegui.create_frame("Let's play 'Guess the Number!!'", 200,200)
+game_buttonR100=game_frame.add_button("0-100", range100, 200)
+game_buttonR1000=game_frame.add_button("0-1000", range1000, 200)
+#add_input button will take user's input and pass it on as
+#'guess' to input_guess(guess) function
+game_buttonIP=game_frame.add_input("Guess a number", input_guess, 200)
+game_frame.start()
+# register event handlers for control elements and start frame
+
+
+# call new_game 
+new_game()
+
+
+# always remember to check your completed program against the grading rubric
