@@ -49,7 +49,7 @@ def input_guess(guess):
     global secret_number
     #use print statement below to verify secret_number being passed
     #to this function i.e to cheat :)
-    print "Comp gen nos is:", secret_number
+    #print "Comp gen nos is:", secret_number
     #decreament till chances=0 and then start new game
     chances=chances-1
     #convert input to integer; Else number will be treated as a 
