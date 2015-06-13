@@ -8,7 +8,7 @@ import math
 
 secret_number=1
 chances=1
-num_range=1000
+num_range=100
 
 # helper function to start and restart the game
 def new_game():
@@ -82,14 +82,14 @@ Let's play a new game"""
 
 # create frame
 game_frame=simplegui.create_frame("Let's play 'Guess the Number!!'", 200,200)
+
+# register event handlers for control elements and start frame
 game_buttonR100=game_frame.add_button("0-100", range100, 200)
 game_buttonR1000=game_frame.add_button("0-1000", range1000, 200)
 #add_input button will take user's input and pass it on as
 #'guess' to input_guess(guess) function
 game_buttonIP=game_frame.add_input("Guess a number", input_guess, 200)
 game_frame.start()
-# register event handlers for control elements and start frame
-
 
 # call new_game 
 new_game()
