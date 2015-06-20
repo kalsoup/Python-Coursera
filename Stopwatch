@@ -1,0 +1,104 @@
+# template for "Stopwatch: The Game"
+
+import simplegui
+
+##------Global Variables------##
+#t is tenth of seconds i.e 100ms
+#result is the value computed in function format(t) in A:BC.D format
+#x, y, tenths and score are used in the stop_counter() 
+#and reset_counter() functions
+t=0
+result="0:00.0"
+tenths=0
+x=0
+y=0
+score="0/0"
+
+# define helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+#this took the longest time; Code clininc and the 
+#discussion pages helped me
+def format(t):
+    global result, tenths
+    #tenth of a second is 100ms i/e 100ms= (1/10)secs = (1/600) mins
+    mins=t/600
+    
+    #consider t=1000; 1000%600 gives remainder of 400
+    #now, 400/10 gives a quotient of 40 which is the seconds.ie BC
+    #and 400%60 goves a remainder of 0, which is the tenths ie D
+    secs_tenths=t%600
+    secs=(secs_tenths)/10
+    tenths=(secs_tenths)%10
+    
+    # if secs is less than 9, in A:BC.D, B will be represented by 0
+    if secs < 10:
+        result = str(mins) + ":" + "0" + str(secs) + "." + str(tenths)
+        #print result-used for verification
+        return result
+    else:
+        result=str(mins) + ":" + str(secs) + "." + str(tenths)
+        #print result-used for verification
+        return result
+    
+# define event handlers for buttons; "Start", "Stop", "Reset"
+
+def start_counter():
+    timer.start()
+
+def stop_counter():
+    global x, y, tenths, score
+    #if timer is running and if the tenths (D is 0)
+    #i.e stopping on a whole second,
+    #then increament x, y and return in x/y format
+    
+    if timer.is_running():
+        if int(tenths)==0:
+            x+=1
+        y+=1
+        timer.stop()
+        score=str(x) + "/" + str(y)
+        #print score - was used for verification
+        return score
+    else:
+        #print "Timer Stopped" - used for verification
+        pass
+    
+def reset_counter():
+    global t, result, x, y, score
+    x=0
+    y=0
+    score="0/0"
+    timer.stop()
+    t=0
+    result="0:00.0"
+    return t, result, score
+    
+# define event handler for timer with 0.1 sec interval
+def timer_handler():
+    global t
+    t=t+1
+    format(t)
+
+# define draw handler
+def draw_handler(canvas):
+    global score
+    canvas.draw_text(str(result), [125,150], 20, "white")
+    canvas.draw_text(str(score), [250,50], 14, "white")
+    
+# create frame
+frame=simplegui.create_frame("Stopwatch", 300, 300)
+
+# register event handlers
+timer=simplegui.create_timer(100,timer_handler)
+frame.set_draw_handler(draw_handler)
+frame.set_canvas_background("navy")
+frame.add_button("Start",start_counter,50)
+frame.add_button("Stop",stop_counter,50)
+frame.add_button("Reset",reset_counter,50)
+
+
+# start frame
+frame.start()
+#timer.start()
+
+# Please remember to review the grading rubric
