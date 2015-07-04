@@ -1,0 +1,135 @@
+# Implementation of classic arcade game Pong
+
+import simplegui
+import random
+
+# initialize globals - pos and vel encode vertical info for paddles
+WIDTH = 600
+HEIGHT = 400       
+BALL_RADIUS = 10
+PAD_WIDTH = 8
+PAD_HEIGHT = 80
+HALF_PAD_WIDTH = PAD_WIDTH / 2
+HALF_PAD_HEIGHT = PAD_HEIGHT / 2
+LEFT = False
+RIGHT = True
+score1=0
+score2=0
+
+paddle1_pos=HEIGHT/2
+paddle2_pos=HEIGHT/2
+paddle1_vel=25
+paddle2_vel=25
+ball_pos=[WIDTH/2,HEIGHT/2]
+ball_vel=[0,0]
+# initialize ball_pos and ball_vel for new bal in middle of table
+# if direction is RIGHT, the ball's velocity is upper right, else upper left
+def spawn_ball(direction):
+    global ball_pos, ball_vel # these are vectors stored as lists
+    ball_pos=[WIDTH/2,WIDTH/2]
+    if direction==RIGHT:
+        ball_vel[0]=random.randrange(2,5)
+        ball_vel[1]=-random.randrange(2,5)
+    elif direction==LEFT:
+        ball_vel[0]=-random.randrange(2,5)
+        ball_vel[1]=random.randrange(2,5)
+
+
+# define event handlers
+def new_game():
+    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel,score1, score2  # these are numbers
+    score1=0
+    score2=0  # these are ints
+    spawn_ball(RIGHT)
+
+def draw(canvas):
+    global score1, score2, score_display1,paddle1_pos, paddle2_pos, ball_pos, ball_vel, paddle2, BALL_RADIUS
+ 
+        
+    # draw mid line and gutters
+    canvas.draw_line([WIDTH / 2, 0],[WIDTH / 2, HEIGHT], 1, "White")
+    canvas.draw_line([PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1, "White")
+    canvas.draw_line([WIDTH - PAD_WIDTH, 0],[WIDTH - PAD_WIDTH, HEIGHT], 1, "White")
+        
+    # update ball
+    ball_pos[0]+=ball_vel[0]
+    ball_pos[1]+=ball_vel[1]
+    
+    # bouce ball off of bottom and top of canvas
+    if ball_pos[1]<=BALL_RADIUS or ball_pos[1]>=HEIGHT-BALL_RADIUS:
+        ball_vel[1]=-ball_vel[1]
+            
+    # draw ball
+    canvas.draw_circle(ball_pos, BALL_RADIUS, 2,"white", "white",)
+    
+     
+    # draw paddles
+    #paddle1:
+    p1_e1=[0, paddle1_pos+PAD_HEIGHT]
+    p1_e2=[0, paddle1_pos]
+    p1_e3=[PAD_WIDTH, paddle1_pos]
+    p1_e4=[PAD_WIDTH, paddle1_pos+PAD_HEIGHT]
+    canvas.draw_polygon([p1_e1,p1_e2,p1_e3,p1_e4],1,"white","red")
+    
+    #paddle2:
+    #bottom left edge
+    p2_e1=[WIDTH-PAD_WIDTH,paddle2_pos+PAD_HEIGHT]
+    #top left edge
+    p2_e2=[WIDTH-PAD_WIDTH,paddle2_pos]
+    #top right edge
+    p2_e3=[WIDTH,paddle2_pos]
+    #bottom right edge
+    p2_e4=[WIDTH, paddle2_pos+PAD_HEIGHT]
+    canvas.draw_polygon([p2_e1,p2_e2,p2_e3,p2_e4],1,"white","blue")
+    
+    
+    # determine whether paddle and ball collide 
+    
+    if ball_pos[0]<=(PAD_WIDTH+BALL_RADIUS):
+        if (ball_pos[1]<=p1_e1[1]) and (ball_pos[1]>=p1_e2[1]):
+            ball_vel[0]=-ball_vel[0]*1.5
+            ball_vel[1]=-ball_vel[1]*1.5
+        else:
+            score2+=1
+            spawn_ball(LEFT)
+            
+   
+    if ball_pos[0]>=(WIDTH-(PAD_WIDTH+BALL_RADIUS)):     
+        if (ball_pos[1]<=p2_e1[1]) and (ball_pos[1]>=p2_e2[1]):
+            ball_vel[0]=-ball_vel[0]*1.1
+            ball_vel[1]=-ball_vel[1]*1.1
+        else:
+            score1+=1
+            spawn_ball(RIGHT)
+           
+    
+    # draw scores
+    canvas.draw_text(str(score1),(50,50),12,"red")
+    canvas.draw_text(str(score2),(550,50),12,"red")
+        
+def keydown(key):
+#moves paddle only if paddle_pos is between 0 and HEIGHT
+    global paddle1_vel, paddle1_pos, paddle2_vel, paddle2_pos,HEIGHT,PAD_HEIGHT
+    if (paddle1_pos!=0):
+        if key==simplegui.KEY_MAP['w']:
+            paddle1_pos-=paddle1_vel
+    if((paddle1_pos+PAD_HEIGHT)<=HEIGHT):
+        if key==simplegui.KEY_MAP['s']:
+            paddle1_pos+=paddle1_vel
+    if (paddle2_pos!=0):
+        if key==simplegui.KEY_MAP['up']:
+            paddle2_pos-=paddle2_vel
+    if ((paddle2_pos+PAD_HEIGHT)<=HEIGHT):        
+        if key==simplegui.KEY_MAP['down']:
+            paddle2_pos+=paddle2_vel
+   
+# create frame
+frame = simplegui.create_frame("Pong", WIDTH, HEIGHT)
+frame.set_draw_handler(draw)
+frame.set_keydown_handler(keydown)
+frame.add_button('New Game', new_game)
+
+
+# start frame
+new_game()
+frame.start()
